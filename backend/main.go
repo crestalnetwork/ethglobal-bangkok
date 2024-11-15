@@ -7,12 +7,16 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/crestalnetwork/ethglobal-bangkok/backend/types"
 )
 
 var log *slog.Logger
+var config *types.Config
 
 func init() {
 	log = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	config = &types.Config{}
 }
 
 func main() {
@@ -21,7 +25,7 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	err := start(ctx)
+	err := Start(ctx)
 	if errors.Is(err, context.Canceled) {
 		log.Info("service shutdown gracefully")
 		return

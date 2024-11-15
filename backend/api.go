@@ -12,9 +12,21 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	slogfiber "github.com/samber/slog-fiber"
+
+	"github.com/crestalnetwork/ethglobal-bangkok/backend/handler"
+	"github.com/crestalnetwork/ethglobal-bangkok/backend/service"
 )
 
-func start(ctx context.Context) error {
+func Start(ctx context.Context) error {
+	// service
+	s, err := service.New(service.Options{
+		Config: config,
+		Logger: log,
+	})
+	if err != nil {
+		return err
+	}
+	h := handler.New(s)
 	// fiber app
 	app := fiber.New(fiber.Config{
 		ReadTimeout:              60 * time.Second,
@@ -51,6 +63,9 @@ func start(ctx context.Context) error {
 
 	// recover panic in handler
 	app.Use(recover.New(recover.Config{EnableStackTrace: true}))
+
+	// register routes
+	app.Post("/function", h.VAPIFunction)
 
 	go func() {
 		<-ctx.Done()

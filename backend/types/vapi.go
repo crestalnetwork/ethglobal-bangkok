@@ -48,3 +48,7 @@ type StatusUpdatePayload struct {
 func (p StatusUpdatePayload) GetCallType() VapiWebhookEnum {
 	return p.Type
 }
+
+type FunctionResult struct {
+	Result string `json:"result"`
+}
