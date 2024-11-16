@@ -1,6 +1,8 @@
 package types
 
 import (
+	"encoding/json"
+
 	vapi "github.com/VapiAI/server-sdk-go"
 )
 
@@ -55,5 +57,11 @@ type FunctionResult struct {
 }
 
 type VapiServerMessageToolCall struct {
-	Message vapi.ServerMessageToolCalls `json:"message"`
+	Message VapiServerMessageToolCallMessage `json:"message"`
+}
+
+type VapiServerMessageToolCallMessage struct {
+	ToolCallList    []*vapi.ToolCall `json:"toolCallList,omitempty" url:"toolCallList,omitempty"`
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
 }
