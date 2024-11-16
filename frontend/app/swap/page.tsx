@@ -55,7 +55,7 @@ export default function Swap() {
       const { destination_token_symbol, origin_token_amount, origin_token_symbol, price } = trade
 
       if (step === 2) {
-        setEthAmount(destination_token_symbol);
+        setEthAmount(origin_token_amount);
       } else if (step === 3) {
         vapi.stop();
         handleSwap(price);
@@ -218,7 +218,7 @@ export default function Swap() {
   return (
     <div className="mt-4 p-4">
       <div className="flex flex-col items-center justify-center p-4">
-        <h1 className="text-2xl font-bold mb-6">Voice Trading</h1>
+        <h1 className="text-2xl font-bold mb-6">Look Ma, No Hands!</h1>
 
         <div>
           {
