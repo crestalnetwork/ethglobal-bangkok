@@ -19,21 +19,21 @@ func (s *Service) VAPIFunctionTrade(ctx context.Context, msg *types.VapiServerMe
 		if tool.Function != nil {
 			if tool.Function.Name == "trade" {
 				id = tool.Id
-				curr, ok := tool.Function.Arguments["currency"]
+				curr, ok := tool.Function.Arguments["origin_token_symbol"]
 				if !ok {
-					return nil, types.NewError(fiber.StatusBadRequest, "BadRequest", "currency is required")
+					return nil, types.NewError(fiber.StatusBadRequest, "BadRequest", "origin_token_symbol is required")
 				}
-				trade.Currency = curr.(string)
-				amount, ok := tool.Function.Arguments["amount"]
+				trade.OriginTokenSymbol = curr.(string)
+				amount, ok := tool.Function.Arguments["origin_token_amount"]
 				if !ok {
-					return nil, types.NewError(fiber.StatusBadRequest, "BadRequest", "amount is required")
+					return nil, types.NewError(fiber.StatusBadRequest, "BadRequest", "origin_token_amount is required")
 				}
-				trade.Amount = amount.(float64)
-				action, ok := tool.Function.Arguments["action"]
+				trade.OriginTokenAmount = amount.(float64)
+				action, ok := tool.Function.Arguments["destination_token_symbol"]
 				if !ok {
-					return nil, types.NewError(fiber.StatusBadRequest, "BadRequest", "action is required")
+					return nil, types.NewError(fiber.StatusBadRequest, "BadRequest", "destination_token_symbol is required")
 				}
-				trade.Action = action.(string)
+				trade.DestinationTokenSymbol = action.(string)
 				break
 			}
 		}
@@ -46,7 +46,7 @@ func (s *Service) VAPIFunctionTrade(ctx context.Context, msg *types.VapiServerMe
 		return nil, err
 	}
 	if state.Step > 0 {
-		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.Currency)), nil
+		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.OriginTokenSymbol)), nil
 	}
 
 	s.log.Warn("VAPIFunction trade called", "state", state)
@@ -55,7 +55,7 @@ func (s *Service) VAPIFunctionTrade(ctx context.Context, msg *types.VapiServerMe
 	state.Trade = *trade
 	state.Step = 1
 	s.state.Store(callID, state)
-	return vapiToolResponse(id, fmt.Sprintf("Tell the user: The prize of %s is $%f now, are you sure you want to go ahead with this transaction?", trade.Currency, trade.Price)), nil
+	return vapiToolResponse(id, fmt.Sprintf("Tell the user: The prize of %s is $%f now, are you sure you want to go ahead with this transaction?", trade.OriginTokenSymbol, trade.Price)), nil
 }
 
 func (s *Service) VAPIFunctionConfirm(ctx context.Context, msg *types.VapiServerMessageToolCall) (*types.ToolResults, error) {
@@ -87,7 +87,7 @@ func (s *Service) VAPIFunctionConfirm(ctx context.Context, msg *types.VapiServer
 		return nil, err
 	}
 	if state.Step > 1 {
-		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.Currency)), nil
+		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.OriginTokenSymbol)), nil
 	}
 
 	// update the state
@@ -136,7 +136,7 @@ func (s *Service) VAPIFunctionSign(ctx context.Context, msg *types.VapiServerMes
 		return nil, err
 	}
 	if state.Step > 2 {
-		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.Currency)), nil
+		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.OriginTokenSymbol)), nil
 	}
 
 	// update the state
