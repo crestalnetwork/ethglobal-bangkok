@@ -239,7 +239,7 @@ export default function Swap() {
                 <div>USDC Balance: <span className="font-bold">{formatNumberWithCommas(usdcBalance, 2)}</span></div>
                 {
                   !!transactionHash && (
-                    <div>Last Transaction Hash: <Link className="font-bold" href={`https://basescan.org/tx/${transactionHash}`} target="_blank" rel='noopener noreferrer'>{transactionHash}</Link></div>
+                    <div>Blockscout Transaction Hash: <Link className="font-bold text-blue-6" href={`https://base.blockscout.com/tx/${transactionHash}`} target="_blank" rel='noopener noreferrer'>{transactionHash}</Link></div>
                   )
                 }
 
