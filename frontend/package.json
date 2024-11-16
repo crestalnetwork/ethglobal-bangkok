@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@1inch/cross-chain-sdk": "^0.1.10",
     "@coinbase/coinbase-sdk": "^0.10.0",
     "@coinbase/onchainkit": "^0.35.5",
     "@nextui-org/react": "^2.4.8",
@@ -17,7 +18,8 @@
     "framer-motion": "^11.11.17",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "web3": "^4.15.0"
   },
   "devDependencies": {
     "@types/node": "^20",
