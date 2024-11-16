@@ -22,12 +22,10 @@ app.listen(PORT, () => {
 app.post("/swap", async (req: Request, res: Response) => {
   try {
     await swap(
-      req.body.srcNetwork,
       req.body.srcToken,
-      req.body.dstNetwork,
       req.body.dstToken,
       req.body.amount).then(function () {
-
+        return res.status(StatusCodes.OK).json({success: true})
       }).catch(function (e) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ e })
       });

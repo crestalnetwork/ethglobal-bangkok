@@ -12,6 +12,6 @@
     "experimentalDecorators": true, // for typeorm
     "emitDecoratorMetadata": true // for typeorm
   },
-  "include": ["./src"],
+  "include": ["./src", "../Untitled-1.js"],
   "exclude": ["node_modules"]
 }
