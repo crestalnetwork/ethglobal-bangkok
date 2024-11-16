@@ -1,0 +1,25 @@
+{
+  "name": "ethglobal",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "npx tsx src/index.ts",
+    "build": "rm -rf build/ && prettier --write source/ && tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@1inch/cross-chain-sdk": "^0.1.10",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "fs": "^0.0.1-security",
+    "helmet": "^8.0.0",
+    "http-status-codes": "^2.3.0",
+    "web3": "^4.15.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}
