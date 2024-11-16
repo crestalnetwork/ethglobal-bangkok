@@ -35,6 +35,6 @@ func New(options Options) (*Service, error) {
 	return &Service{
 		config: options.Config,
 		log:    log,
-		wallet: "0x1234567890",
+		wallet: "0x3487c3010Ba226abDc0cf058875f88e4a0F1eC92", // hardcode now
 	}, nil
 }
