@@ -171,7 +171,7 @@ export default function Swap() {
         throw new Error(data.error);
       }
 
-      setUsdcAmount(data.usdcAmount);
+      setUsdcAmount(Number(data.usdcAmount));
     } catch (error) {
       console.error("Failed to fetch USDC price:", error);
       setUsdcAmount(0);
@@ -209,7 +209,7 @@ export default function Swap() {
       setEthAmount('')
       setUsdcAmount(0)
     } catch (error) {
-      console.error("Failed to fetch USDC price:", error);
+      console.error("Failed to swap:", error);
     } finally {
       setSwapping(false);
     }
@@ -271,7 +271,7 @@ export default function Swap() {
                       <p className="text-gray-500">Signing <span className="font-bold">ERC7730</span>...</p>
                     )
                   }
-                  <Button className="mt-6" onClick={handleSwap}>Swap</Button>
+                  <Button className="mt-6" onClick={() => handleSwap()}>Swap</Button>
                 </div>
 
               </div>
