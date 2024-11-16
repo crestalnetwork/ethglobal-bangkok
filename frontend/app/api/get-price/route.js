@@ -1,14 +1,4 @@
 import { NextResponse } from "next/server";
-import { Client } from "@coinbase/coinbase-sdk";
-
-console.log("process.env.COINBASE_API_KEY", process.env.COINBASE_API_KEY);
-
-
-const client = new Client({
-    apiKey: process.env.COINBASE_API_KEY,
-    apiSecret: process.env.COINBASE_API_SECRET,
-    baseApiUrl: "https://api.coinbase.com", // Default endpoint for Coinbase
-});
 
 export async function POST(req) {
     try {
@@ -21,8 +11,8 @@ export async function POST(req) {
             );
         }
 
-        // Get real-time exchange rate from Coinbase API
-        const rate = await client.spot.getExchangeRate("ETH", "USDC");
+        // TODO: Get real-time exchange rate from Coinbase API
+        const rate = 3043.67;
         const usdcNeeded = parseFloat(ethAmount) * parseFloat(rate);
 
         return NextResponse.json({
