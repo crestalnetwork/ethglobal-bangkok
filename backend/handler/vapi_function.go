@@ -7,12 +7,12 @@ import (
 )
 
 func (h *Handler) VAPIFunction(c *fiber.Ctx) error {
-	var genericMessage map[string]interface{}
-	err := c.BodyParser(&genericMessage)
+	var msg map[string]interface{}
+	err := c.BodyParser(&msg)
 	if err != nil {
 		return types.NewError(fiber.StatusBadRequest, "BadRequest", err.Error())
 	}
-	err = h.s.VAPIFunction(c.Context(), genericMessage)
+	err = h.s.VAPIFunction(c.Context(), msg)
 	if err != nil {
 		return err
 	}
@@ -21,12 +21,12 @@ func (h *Handler) VAPIFunction(c *fiber.Ctx) error {
 }
 
 func (h *Handler) VAPIFunctionTrade(c *fiber.Ctx) error {
-	var genericMessage map[string]interface{}
-	err := c.BodyParser(&genericMessage)
+	var msg = new(types.VapiServerMessageToolCall)
+	err := c.BodyParser(msg)
 	if err != nil {
 		return types.NewError(fiber.StatusBadRequest, "BadRequest", err.Error())
 	}
-	resp, err := h.s.VAPIFunctionTrade(c.Context(), genericMessage)
+	resp, err := h.s.VAPIFunctionTrade(c.Context(), msg)
 	if err != nil {
 		return err
 	}

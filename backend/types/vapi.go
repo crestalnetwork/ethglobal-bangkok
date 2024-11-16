@@ -41,7 +41,8 @@ func (p AssistantRequestPayload) GetCallType() VapiWebhookEnum {
 
 type StatusUpdatePayload struct {
 	BaseVapiPayload
-	Status   vapi.CallStatus       `json:"status"`
+	Status vapi.CallStatus `json:"status"`
+	vapi.ToolCallMessage
 	Messages []ConversationMessage `json:"messages,omitempty"`
 }
 
@@ -51,4 +52,8 @@ func (p StatusUpdatePayload) GetCallType() VapiWebhookEnum {
 
 type FunctionResult struct {
 	Result string `json:"result"`
+}
+
+type VapiServerMessageToolCall struct {
+	Message vapi.ServerMessageToolCalls `json:"message"`
 }
