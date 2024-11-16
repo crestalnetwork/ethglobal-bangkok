@@ -175,7 +175,7 @@ func (s *Service) VAPIFunctionGetWallet(ctx context.Context, msg *types.VapiServ
 	}
 
 	s.log.Warn("VAPIFunction get wallet called")
-	resp = vapiToolResponse(id, fmt.Sprintf("Your wallet is %s", s.wallet))
+	resp = vapiToolResponse(id, fmt.Sprintf("Your wallet ends with %s", s.wallet[len(s.wallet)-4:]))
 	return resp, nil
 }
 
