@@ -15,9 +15,16 @@ export async function POST(req) {
         const rate = 3043.67;
         const usdcNeeded = parseFloat(ethAmount) * parseFloat(rate);
 
-        return NextResponse.json({
-            usdcAmount: usdcNeeded.toFixed(2), // Format to 2 decimal places
-        });
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(
+                    NextResponse.json({
+                        usdcAmount: usdcNeeded.toFixed(2), // Format to 2 decimal places
+                    })
+                )
+            }, 500)
+
+        })
     } catch (error) {
         console.error("Error fetching exchange rate:", error);
         return NextResponse.json(
