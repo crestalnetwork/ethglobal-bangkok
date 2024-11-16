@@ -6,7 +6,7 @@ import (
 	"github.com/crestalnetwork/ethglobal-bangkok/backend/types"
 )
 
-func (h *Handler) VAPIFunction(c *fiber.Ctx) error {
+func (h *Handler) VAPIFunctionTrade(c *fiber.Ctx) error {
 	var genericMessage map[string]interface{}
 	err := c.BodyParser(&genericMessage)
 	if err != nil {

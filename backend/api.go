@@ -68,7 +68,7 @@ func Start(ctx context.Context) error {
 	app.Use(recover.New(recover.Config{EnableStackTrace: true}))
 
 	// register routes
-	app.Post("/function", h.VAPIFunction)
+	app.Post("/function/trade", h.VAPIFunctionTrade)
 
 	go func() {
 		<-ctx.Done()
