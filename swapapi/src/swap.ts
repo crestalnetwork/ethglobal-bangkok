@@ -51,7 +51,7 @@ export const swap = async function (srcToken: string, dstToken: string, amount: 
   const quote = await sdk.getQuote({
     amount: amount,
     srcChainId: srcNetwork,
-    dstChainId: dstNetwork, 
+    dstChainId: dstNetwork,
     enableEstimate: true,
     srcTokenAddress: srcTokenAddress!, // "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
     dstTokenAddress: dstTokenAddress!, // "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"

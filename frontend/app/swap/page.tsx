@@ -1,19 +1,88 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/react";
+import Image from 'next/image'
 import { formatNumberWithCommas } from "../utils/formatNumberWithCommas";
 
-export default function Swap() {
-  const [connecting, setConnecting] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [swapping, setSwapping] = useState(false);
+import Vapi from "@vapi-ai/web";
+import Link from "next/link";
+const vapi = new Vapi("388edb4d-b8fb-4bb6-bb3a-7ddf0d7be2b5");
 
-  const [address, setAddress] = useState("");
-  const [ethAmount, setEthAmount] = useState("");
-  const [usdcAmount, setUsdcAmount] = useState(0);
+
+export default function Swap() {
+  const [loadingBalance, setLoadingBalance] = useState(false)
+  const [chatting, setChatting] = useState(false)
+  const [connecting, setConnecting] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [swapping, setSwapping] = useState(false)
+
+  const [address, setAddress] = useState("")
+  const [ethAmount, setEthAmount] = useState("")
+  const [usdcAmount, setUsdcAmount] = useState(0)
   const [ethBalance, setEthBalance] = useState(10)
   const [usdcBalance, setUsdcBalance] = useState(0)
+  const [transactionHash, setTransactionHash] = useState('')
+
+  useEffect(() => {
+    getBalance();
+
+    vapi.on("message", (message) => {
+      if (message.role === 'assistant') {
+        console.log(message);
+      }
+    });
+
+    vapi.on("error", (e) => {
+      console.error(e);
+    });
+
+    return () => {
+      vapi.stop();
+    }
+  }, [])
+
+
+  /**
+   * Get Balance
+   */
+  const getBalance = async () => {
+    setLoadingBalance(true);
+    try {
+      const response = await fetch("/api/get-balance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setEthBalance(data.ethBalance);
+      setUsdcBalance(data.usdcBalance);
+    } catch (error) {
+      console.error("Failed to get balance", error);
+      setEthBalance(0);
+      setUsdcBalance(0);
+    } finally {
+      setLoadingBalance(false);
+    }
+  }
+
+
+  /**
+   * Start Chart
+   */
+  const startChart = async () => {
+    if (!chatting) {
+      vapi.start("b4d67474-30a9-432b-b3ec-fdf0121911e3");
+    } else {
+      vapi.stop();
+    }
+
+    setChatting(!chatting)
+  }
 
 
   /**
@@ -95,8 +164,9 @@ export default function Swap() {
         throw new Error(data.error);
       }
 
-      setEthBalance(ethBalance - Number(ethAmount));
-      setUsdcBalance(usdcBalance + Number(usdcAmount));
+      setTransactionHash(data.transactionHash)
+
+      getBalance();
 
       setEthAmount('')
       setUsdcAmount(0)
@@ -112,59 +182,76 @@ export default function Swap() {
       <div className="flex flex-col items-center justify-center p-4">
         <h1 className="text-2xl font-bold mb-6">Voice Trading</h1>
 
-        {
-          !address ? (
-            <div>
-              {
-                connecting ? (
-                  <div>Connecting...</div>
-                ) : (
-                  <Button onClick={connectWallet}>Connect Wallet</Button>
-                )
-              }
-            </div>
-          ) : (
-            <div>
-              <div>User Address: <span className="font-bold">{address}</span></div>
-              <div>ETH Balance: <span className="font-bold">{ethBalance}</span></div>
-              <div>USDC Balance: <span className="font-bold">{formatNumberWithCommas(usdcBalance, 2)}</span></div>
-
-
-              <div className="mt-4">
-                <input
-                  type="number"
-                  placeholder="Enter ETH amount"
-                  value={ethAmount}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setEthAmount(value);
-                    fetchPrice(Number(value));
-                  }}
-                  className="border border-gray-300 rounded-lg px-4 py-2 mb-2 w-72"
-                />
-
-                {loading ? (
-                  <p className="text-gray-500">Fetching price...</p>
-                ) : (
-                  <p className="text-lg">
-                    Estimated USDC needed: <strong>{formatNumberWithCommas(usdcAmount, 2)} USDC</strong>
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-4">
+        <div>
+          {
+            !address ? (
+              <div>
                 {
-                  swapping && (
-                    <p className="text-gray-500">Signing ERC7730...</p>
+                  connecting ? (
+                    <div>Connecting...</div>
+                  ) : (
+                    <Button onClick={connectWallet} className="bg-blue-5 text-white">Connect Wallet</Button>
                   )
                 }
-                <Button className="mt-6" onClick={handleSwap}>Swap</Button>
               </div>
+            ) : (
+              <div>
+                <div>User Address: <span className="font-bold">{address}</span></div>
+                <div>ETH Balance: <span className="font-bold">{ethBalance}</span></div>
+                <div>USDC Balance: <span className="font-bold">{formatNumberWithCommas(usdcBalance, 2)}</span></div>
+                {
+                  !!transactionHash && (
+                    <div>Last Transaction Hash: <Link className="font-bold" href={`https://basescan.org/tx/${transactionHash}`} target="_blank" rel='noopener noreferrer'>{transactionHash}</Link></div>
+                  )
+                }
 
-            </div>
-          )
-        }
+                <div className="mt-4">
+                  <input
+                    type="number"
+                    placeholder="Enter ETH amount"
+                    value={ethAmount}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setEthAmount(value);
+                      fetchPrice(Number(value));
+                    }}
+                    className="border border-gray-300 rounded-lg px-4 py-2 mb-2 w-72"
+                  />
 
+                  {loading ? (
+                    <p className="text-gray-500">Fetching price...</p>
+                  ) : (
+                    <p className="text-lg">
+                      Estimated USDC needed: <strong>{formatNumberWithCommas(usdcAmount, 2)} USDC</strong>
+                    </p>
+                  )}
+                </div>
+
+                <div className="mt-4">
+                  {
+                    swapping && (
+                      <p className="text-gray-500">Signing <span className="font-bold">ERC7730</span>...</p>
+                    )
+                  }
+                  <Button className="mt-6" onClick={handleSwap}>Swap</Button>
+                </div>
+
+              </div>
+            )
+          }
+        </div>
+
+
+        <div className="mt-8">
+          <Image
+            className="cursor-pointer"
+            src="/chat.png"
+            width={100}
+            height={100}
+            alt="Start Chat"
+            onClick={startChart}
+          />
+        </div>
 
 
       </div>

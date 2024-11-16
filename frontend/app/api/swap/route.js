@@ -33,11 +33,13 @@ export async function POST(req) {
 
         if (trade.getStatus() === 'complete') {
             console.log(`Trade successfully completed: `, trade.toString());
+            console.log(`transfer_id`,);
+
+            const transactionHash = trade.getTransaction().getTransactionHash()
 
             return NextResponse.json({
                 success: true,
-                transactionHash: '0xmockedtxhash123456789',
-                receivedAmount: ethAmount * rate
+                transactionHash,
             });
         } else {
             console.log(`Trade failed on-chain: `, trade.toString());
@@ -45,7 +47,6 @@ export async function POST(req) {
             return NextResponse.json({
                 success: true,
                 transactionHash: '0xmockedtxhash123456789',
-                receivedAmount: 0
             });
         }
 

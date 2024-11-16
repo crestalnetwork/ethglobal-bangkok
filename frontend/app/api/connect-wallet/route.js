@@ -32,6 +32,7 @@ export async function POST() {
             address = match ? match[1] : '';
 
             let seed = wallet.export();
+            wallet.saveSeed('./app/api/swap/my-seed2.json')
             const walletData = {
                 ...seed,
                 address,
