@@ -29,7 +29,7 @@ export async function POST() {
 
             let addressInfo = await wallet.getDefaultAddress();
             const match = addressInfo.toString().match(/addressId:\s*'([^']+)'/);
-            const address = match ? match[1] : '';
+            address = match ? match[1] : '';
 
             let seed = wallet.export();
             const walletData = {
@@ -38,6 +38,8 @@ export async function POST() {
             }
             fs.writeFileSync(seedPath, JSON.stringify(walletData, null, 4))
         }
+
+        console.log('address', address);
 
         return NextResponse.json({
             success: true,
