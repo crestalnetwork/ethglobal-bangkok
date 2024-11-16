@@ -38,11 +38,24 @@ func (s *Service) VAPIFunctionTrade(ctx context.Context, msg *types.VapiServerMe
 			}
 		}
 	}
-	s.log.Warn("VAPIFunction called", "trade", trade)
-	res := types.ToolResult{ToolCallID: id, Result: fmt.Sprintf("Tell the user:The prize of %s is $%f now, are you sure you want to go ahead with this transaction?",
-		trade.Currency, rand.Float64()*100)}
-	resp.Results = append(resp.Results, res)
-	return resp, nil
+
+	callID := msg.Message.Call.Id
+	// check the call id
+	state, err := s.GetChatState(ctx, callID)
+	if err != nil {
+		return nil, err
+	}
+	if state.Step > 0 {
+		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.Currency)), nil
+	}
+
+	s.log.Warn("VAPIFunction trade called", "state", state)
+	trade.Price = rand.Float64() * 100 // mock the price
+	// update the state
+	state.Trade = *trade
+	state.Step = 1
+	s.state.Store(callID, state)
+	return vapiToolResponse(id, fmt.Sprintf("Tell the user: The prize of %s is $%f now, are you sure you want to go ahead with this transaction?", trade.Currency, trade.Price)), nil
 }
 
 func (s *Service) VAPIFunctionConfirm(ctx context.Context, msg *types.VapiServerMessageToolCall) (*types.ToolResults, error) {
@@ -66,7 +79,23 @@ func (s *Service) VAPIFunctionConfirm(ctx context.Context, msg *types.VapiServer
 			}
 		}
 	}
-	s.log.Warn("VAPIFunction called", "confirm", confirm)
+
+	callID := msg.Message.Call.Id
+	// check the call id
+	state, err := s.GetChatState(ctx, callID)
+	if err != nil {
+		return nil, err
+	}
+	if state.Step > 1 {
+		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.Currency)), nil
+	}
+
+	// update the state
+	state.Step = 2
+	state.IsConfirmed = confirm
+	s.state.Store(callID, state)
+
+	s.log.Warn("VAPIFunction confirm called", "state", state)
 	if confirm {
 		res := types.ToolResult{ToolCallID: id, Result: `Tell the user:"This is the transaction waiting for your signature. Can you authorize the AI assistant to sign for you"`}
 		resp.Results = append(resp.Results, res)
@@ -99,7 +128,24 @@ func (s *Service) VAPIFunctionSign(ctx context.Context, msg *types.VapiServerMes
 			}
 		}
 	}
-	s.log.Warn("VAPIFunction called", "sign", confirm)
+
+	callID := msg.Message.Call.Id
+	// check the call id
+	state, err := s.GetChatState(ctx, callID)
+	if err != nil {
+		return nil, err
+	}
+	if state.Step > 2 {
+		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.Currency)), nil
+	}
+
+	// update the state
+	state.Step = 3
+	state.IsSigned = confirm
+	state.EIP7730 = "EIP7730 Mock Data"
+	s.state.Store(callID, state)
+
+	s.log.Warn("VAPIFunction sign called", "state", state)
 	if confirm {
 		res := types.ToolResult{ToolCallID: id, Result: `Tell the user:"Thank you, I will sign for you to complete the transaction."`}
 		resp.Results = append(resp.Results, res)
@@ -116,4 +162,15 @@ func (s *Service) VAPIFunction(ctx context.Context, genericMessage map[string]in
 	// s.log.Info("VAPIFunctionTrade called", "message", req)
 	// return &types.FunctionResult{Result: "Your transaction is in progress, please wait."}, nil
 	return nil
+}
+
+func vapiToolResponse(toolID string, result string) *types.ToolResults {
+	return &types.ToolResults{
+		Results: []types.ToolResult{
+			{
+				ToolCallID: toolID,
+				Result:     result,
+			},
+		},
+	}
 }
