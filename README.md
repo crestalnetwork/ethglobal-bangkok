@@ -1,4 +1,4 @@
-# ethglobal-bangkok
+# Look Ma, No Hands!
 
 ETHGlobal Bangkok 2024 Hackathon Project
 
