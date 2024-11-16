@@ -65,3 +65,19 @@ func (h *Handler) VAPIFunctionSign(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(resp)
 }
+
+func (h *Handler) VAPIFunctionGetWallet(c *fiber.Ctx) error {
+	var msg = new(types.VapiServerMessageToolCall)
+	err := c.BodyParser(msg)
+	if err != nil {
+		h.log.Error("VAPIFunctionGetWallet", "error", err)
+		h.log.Error("VAPIFunctionGetWallet body", "body", string(c.Body()))
+		return types.NewError(fiber.StatusBadRequest, "BadRequest", err.Error())
+	}
+	resp, err := h.s.VAPIFunctionGetWallet(c.Context(), msg)
+	if err != nil {
+		return err
+	}
+
+	return c.Status(fiber.StatusOK).JSON(resp)
+}

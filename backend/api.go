@@ -72,6 +72,7 @@ func Start(ctx context.Context) error {
 	app.Post("/function/trade", h.VAPIFunctionTrade)
 	app.Post("/function/confirm", h.VAPIFunctionConfirm)
 	app.Post("/function/sign", h.VAPIFunctionSign)
+	app.Post("/function/get-wallet", h.VAPIFunctionGetWallet)
 
 	app.Get("/chats/:id/state", h.GetChatState)
 

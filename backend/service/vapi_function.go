@@ -28,7 +28,11 @@ func (s *Service) VAPIFunctionTrade(ctx context.Context, msg *types.VapiServerMe
 				if !ok {
 					return nil, types.NewError(fiber.StatusBadRequest, "BadRequest", "origin_token_amount is required")
 				}
-				trade.OriginTokenAmount = amount.(float64)
+				trade.OriginTokenAmount, ok = amount.(float64)
+				if !ok {
+					s.log.Error("VAPIFunctionTrade", "error", "origin_token_amount is not float64")
+					return vapiToolResponse(id, "error, origin_token_amount is not float64"), nil
+				}
 				action, ok := tool.Function.Arguments["destination_token_symbol"]
 				if !ok {
 					return nil, types.NewError(fiber.StatusBadRequest, "BadRequest", "destination_token_symbol is required")
@@ -154,6 +158,24 @@ func (s *Service) VAPIFunctionSign(ctx context.Context, msg *types.VapiServerMes
 		user:"We will stop this deal and if there are any new tasks, you can wake me up again."`}
 		resp.Results = append(resp.Results, res)
 	}
+	return resp, nil
+}
+
+func (s *Service) VAPIFunctionGetWallet(ctx context.Context, msg *types.VapiServerMessageToolCall) (*types.ToolResults, error) {
+	var id string
+	var resp = new(types.ToolResults)
+	resp.Results = make([]types.ToolResult, 0)
+	for _, tool := range msg.Message.ToolCallList {
+		if tool.Function != nil {
+			if tool.Function.Name == "get_wallet_address" {
+				id = tool.Id
+				break
+			}
+		}
+	}
+
+	s.log.Warn("VAPIFunction get wallet called")
+	vapiToolResponse(id, fmt.Sprintf("Your wallet is %s", s.wallet))
 	return resp, nil
 }
 
