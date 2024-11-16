@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	"net/http"
 	"strings"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 
 	"github.com/crestalnetwork/ethglobal-bangkok/backend/handler"
 	"github.com/crestalnetwork/ethglobal-bangkok/backend/service"
+	"github.com/crestalnetwork/ethglobal-bangkok/backend/types"
 )
 
 func Start(ctx context.Context) error {
@@ -33,6 +35,7 @@ func Start(ctx context.Context) error {
 		WriteTimeout:             60 * time.Second,
 		IdleTimeout:              60 * time.Second,
 		AppName:                  "bangkok-hackathon",
+		ErrorHandler:             ErrorHandler,
 		DisableStartupMessage:    true,
 		EnableSplittingOnParsers: true,
 	})
@@ -82,4 +85,31 @@ func Start(ctx context.Context) error {
 	addr := ":8080" // read from config in production
 	log.Info("api server listen to", "addr", addr)
 	return app.Listen(addr)
+}
+
+// ErrorHandler is a fiber error handler
+func ErrorHandler(ctx *fiber.Ctx, err error) error {
+	var final *types.Error
+
+	// will check these types of errors
+	var fe *fiber.Error
+
+	if errors.As(err, &final) {
+		// error already convert to final, will process it later
+	} else if errors.As(err, &fe) {
+		final = types.NewError(fe.Code, strings.ReplaceAll(http.StatusText(fe.Code), " ", ""), fe.Message)
+	} else if errors.Is(err, context.Canceled) {
+		final = types.Wrap(fiber.StatusBadRequest, "ClientCancelled", err)
+	} else {
+		// other errors
+		final = types.Wrap(fiber.StatusInternalServerError, "ServerError", err)
+	}
+
+	// log the internal server error
+	if final.StatusCode() >= fiber.StatusInternalServerError {
+		// log the error
+		slog.Error("internal server error", "error", final, "component", "fiber")
+	}
+
+	return ctx.Status(final.StatusCode()).JSON(final)
 }
