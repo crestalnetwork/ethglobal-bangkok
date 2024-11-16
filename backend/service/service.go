@@ -2,6 +2,7 @@ package service
 
 import (
 	"log/slog"
+	"sync"
 
 	"github.com/samber/oops"
 
@@ -16,6 +17,7 @@ type Options struct {
 type Service struct {
 	config *types.Config
 	log    *slog.Logger
+	state  sync.Map // call id -> state
 }
 
 func New(options Options) (*Service, error) {

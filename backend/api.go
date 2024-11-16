@@ -73,6 +73,8 @@ func Start(ctx context.Context) error {
 	app.Post("/function/confirm", h.VAPIFunctionConfirm)
 	app.Post("/function/sign", h.VAPIFunctionSign)
 
+	app.Get("/chats/:id/state", h.GetChatState)
+
 	go func() {
 		<-ctx.Done()
 		err := app.ShutdownWithTimeout(8 * time.Second)
