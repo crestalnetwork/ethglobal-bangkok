@@ -49,7 +49,7 @@ func (s *Service) VAPIFunctionTrade(ctx context.Context, msg *types.VapiServerMe
 		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.Currency)), nil
 	}
 
-	s.log.Warn("VAPIFunction called", "trade", trade)
+	s.log.Warn("VAPIFunction trade called", "state", state)
 	trade.Price = rand.Float64() * 100 // mock the price
 	// update the state
 	state.Trade = *trade
@@ -95,7 +95,7 @@ func (s *Service) VAPIFunctionConfirm(ctx context.Context, msg *types.VapiServer
 	state.IsConfirmed = confirm
 	s.state.Store(callID, state)
 
-	s.log.Warn("VAPIFunction called", "confirm", confirm)
+	s.log.Warn("VAPIFunction confirm called", "state", state)
 	if confirm {
 		res := types.ToolResult{ToolCallID: id, Result: `Tell the user:"This is the transaction waiting for your signature. Can you authorize the AI assistant to sign for you"`}
 		resp.Results = append(resp.Results, res)
@@ -145,7 +145,7 @@ func (s *Service) VAPIFunctionSign(ctx context.Context, msg *types.VapiServerMes
 	state.EIP7730 = "EIP7730 Mock Data"
 	s.state.Store(callID, state)
 
-	s.log.Warn("VAPIFunction called", "sign", confirm)
+	s.log.Warn("VAPIFunction sign called", "state", state)
 	if confirm {
 		res := types.ToolResult{ToolCallID: id, Result: `Tell the user:"Thank you, I will sign for you to complete the transaction."`}
 		resp.Results = append(resp.Results, res)
