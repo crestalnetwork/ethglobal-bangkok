@@ -26,19 +26,47 @@ export default function Swap() {
 
   useEffect(() => {
     getBalance();
-
-    vapi.on("message", (message) => {
-      console.log(message);
-    });
-
-    vapi.on("error", (e) => {
-      console.error(e);
-    });
-
-    return () => {
-      vapi.stop();
-    }
   }, [])
+
+
+  /**
+   * Check Command
+   */
+  const checkCommand = async (callId: string) => {
+    if (!callId) {
+      return
+    }
+
+    // setLoadingBalance(true);
+    try {
+      const response = await fetch(`https://bangkok.service.crestal.dev/chats/${callId}/state`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      const { step, trade } = data
+      console.log('data', step, trade);
+
+      const { destination_token_symbol, origin_token_amount, origin_token_symbol, price } = trade
+
+      if (step === 2) {
+        setEthAmount(destination_token_symbol);
+      } else if (step === 3) {
+        vapi.stop();
+        handleSwap(price);
+      }
+
+    } catch (error) {
+      console.error("Failed to get command", error);
+    } finally {
+      // setLoadingBalance(false);
+    }
+  }
 
 
   /**
@@ -74,7 +102,19 @@ export default function Swap() {
    */
   const startChart = async () => {
     if (!chatting) {
-      vapi.start("b4d67474-30a9-432b-b3ec-fdf0121911e3");
+      const call = await vapi.start("b4d67474-30a9-432b-b3ec-fdf0121911e3");
+
+      vapi.on("message", (message) => {
+        // console.log(message);
+        if (message.role === 'assistant') {
+          checkCommand(call?.id || '');
+        }
+      });
+
+      vapi.on("error", (e) => {
+        console.error(e);
+      });
+
     } else {
       vapi.stop();
     }
@@ -144,7 +184,7 @@ export default function Swap() {
   /**
    * Swap
    */
-  const handleSwap = async () => {
+  const handleSwap = async (commandAmount = 3) => {
     if (swapping || ethBalance < Number(ethAmount)) {
       return;
     }
@@ -154,7 +194,7 @@ export default function Swap() {
       const response = await fetch("/api/swap", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: usdcAmount }),
+        body: JSON.stringify({ amount: commandAmount || usdcAmount }),
       });
 
       const data = await response.json();
