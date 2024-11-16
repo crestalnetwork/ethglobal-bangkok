@@ -6,8 +6,16 @@ import (
 	"github.com/crestalnetwork/ethglobal-bangkok/backend/types"
 )
 
-func (s *Service) GetChatState(ctx context.Context) (*types.State, error) {
-	var resp = new(types.State)
-
+func (s *Service) GetChatState(ctx context.Context, id string) (*types.State, error) {
+	var resp *types.State
+	raw, ok := s.state.Load(id)
+	if !ok {
+		resp = &types.State{
+			ChatID: id,
+		}
+		s.state.Store(id, resp)
+		return resp, nil
+	}
+	resp = raw.(*types.State)
 	return resp, nil
 }
