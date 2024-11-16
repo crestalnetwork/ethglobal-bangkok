@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-exo: Exo, sans-serif;
+
+  --blue-0: hsl(227, 80%, 94%);
+  --blue-1: hsl(227, 80%, 90%);
+  --blue-2: hsl(227, 80%, 86%);
+  --blue-3: hsl(227, 80%, 77%);
+  --blue-4: hsl(227, 80%, 68%);
+  --blue-5: hsl(227, 80%, 59%);
+  --blue-6: hsl(227, 80%, 50%);
+  --blue-7: hsl(227, 80%, 41%);
+  --blue-8: hsl(227, 80%, 32%);
+  --blue-9: hsl(227, 80%, 23%);
+  --purple-0: hsl(292, 80%, 94%);
+  --purple-1: hsl(292, 80%, 90%);
+  --purple-2: hsl(292, 80%, 86%);
+  --purple-3: hsl(292, 80%, 77%);
+  --purple-4: hsl(292, 80%, 68%);
+  --purple-5: hsl(292, 80%, 59%);
+  --purple-6: hsl(292, 80%, 50%);
+  --purple-7: hsl(292, 80%, 41%);
+  --purple-8: hsl(292, 80%, 32%);
+  --purple-9: hsl(292, 80%, 23%);
+  --red-0: hsl(345, 80%, 94%);
+  --red-1: hsl(345, 80%, 90%);
+  --red-2: hsl(345, 80%, 86%);
+  --red-3: hsl(345, 80%, 77%);
+  --red-4: hsl(345, 80%, 68%);
+  --red-5: hsl(345, 80%, 59%);
+  --red-6: hsl(345, 80%, 50%);
+  --red-7: hsl(345, 80%, 41%);
+  --red-8: hsl(345, 80%, 32%);
+  --red-9: hsl(345, 80%, 23%);
+  --green-0: hsl(164, 80%, 94%);
+  --green-1: hsl(164, 80%, 90%);
+  --green-2: hsl(164, 80%, 86%);
+  --green-3: hsl(164, 80%, 77%);
+  --green-4: hsl(164, 80%, 68%);
+  --green-5: hsl(164, 80%, 59%);
+  --green-6: hsl(164, 80%, 50%);
+  --green-7: hsl(164, 80%, 41%);
+  --green-8: hsl(164, 80%, 32%);
+  --green-9: hsl(164, 80%, 23%);
+  --yellow-0: hsl(40, 80%, 94%);
+  --yellow-1: hsl(40, 80%, 90%);
+  --yellow-2: hsl(40, 80%, 86%);
+  --yellow-3: hsl(40, 80%, 77%);
+  --yellow-4: hsl(40, 80%, 68%);
+  --yellow-5: hsl(40, 80%, 59%);
+  --yellow-6: hsl(40, 80%, 50%);
+  --yellow-7: hsl(40, 80%, 41%);
+  --yellow-8: hsl(40, 80%, 32%);
+  --yellow-9: hsl(40, 80%, 23%);
+  --grey-0: hsl(0, 0%, 94%);
+  --grey-1: hsl(0, 0%, 90%);
+  --grey-2: hsl(0, 0%, 86%);
+  --grey-3: hsl(0, 0%, 77%);
+  --grey-4: hsl(0, 0%, 68%);
+  --grey-5: hsl(0, 0%, 59%);
+  --grey-6: hsl(0, 0%, 50%);
+  --grey-7: hsl(0, 0%, 41%);
+  --grey-8: hsl(0, 0%, 32%);
+  --grey-9: hsl(0, 0%, 23%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-exo);
+}
