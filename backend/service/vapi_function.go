@@ -35,7 +35,7 @@ func (s *Service) VAPIFunctionTrade(ctx context.Context, msg *types.VapiServerMe
 		}
 	}
 	s.log.Warn("VAPIFunction called", "trade", trade)
-	return &types.FunctionResult{Result: fmt.Sprintf("The prize of %s is $%f now, are you sure you want to go ahead with this transaction?",
+	return &types.FunctionResult{Result: fmt.Sprintf("Tell the user:The prize of %s is $%f now, are you sure you want to go ahead with this transaction?",
 		trade.Currency, rand.Float64()*100)}, nil
 }
 
@@ -58,9 +58,9 @@ func (s *Service) VAPIFunctionConfirm(ctx context.Context, msg *types.VapiServer
 	}
 	s.log.Warn("VAPIFunction called", "confirm", confirm)
 	if confirm {
-		return &types.FunctionResult{Result: "This is the transaction waiting for your signature. Can you authorize the AI assistant to sign for you?"}, nil
+		return &types.FunctionResult{Result: `Tell the user:"This is the transaction waiting for your signature. Can you authorize the AI assistant to sign for you?"`}, nil
 	}
-	return &types.FunctionResult{Result: "We will stop this deal and if there are any new tasks, you can wake me up again."}, nil
+	return &types.FunctionResult{Result: `Tell the user:"We will stop this deal and if there are any new tasks, you can wake me up again."`}, nil
 }
 
 func (s *Service) VAPIFunctionSign(ctx context.Context, msg *types.VapiServerMessageToolCall) (*types.FunctionResult, error) {
@@ -82,9 +82,9 @@ func (s *Service) VAPIFunctionSign(ctx context.Context, msg *types.VapiServerMes
 	}
 	s.log.Warn("VAPIFunction called", "sign", confirm)
 	if confirm {
-		return &types.FunctionResult{Result: "Thank you, I will sign for you to complete the transaction."}, nil
+		return &types.FunctionResult{Result: `Tell the user:"Thank you, I will sign for you to complete the transaction."`}, nil
 	}
-	return &types.FunctionResult{Result: "We will stop this deal and if there are any new tasks, you can wake me up again."}, nil
+	return &types.FunctionResult{Result: `Tell the user:"We will stop this deal and if there are any new tasks, you can wake me up again."`}, nil
 }
 
 func (s *Service) VAPIFunction(ctx context.Context, genericMessage map[string]interface{}) error {
