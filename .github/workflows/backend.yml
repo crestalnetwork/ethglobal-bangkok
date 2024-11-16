@@ -3,6 +3,8 @@ name: Build Backend
 on:
   push:
     branches: [ main ]
+    paths:
+      - backend
 
 jobs:
   docker:
