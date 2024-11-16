@@ -6,13 +6,27 @@ import (
 	"github.com/crestalnetwork/ethglobal-bangkok/backend/types"
 )
 
+func (h *Handler) VAPIFunction(c *fiber.Ctx) error {
+	var genericMessage map[string]interface{}
+	err := c.BodyParser(&genericMessage)
+	if err != nil {
+		return types.NewError(fiber.StatusBadRequest, "BadRequest", err.Error())
+	}
+	err = h.s.VAPIFunction(c.Context(), genericMessage)
+	if err != nil {
+		return err
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
+
 func (h *Handler) VAPIFunctionTrade(c *fiber.Ctx) error {
 	var genericMessage map[string]interface{}
 	err := c.BodyParser(&genericMessage)
 	if err != nil {
 		return types.NewError(fiber.StatusBadRequest, "BadRequest", err.Error())
 	}
-	resp, err := h.s.VAPIFunction(c.Context(), genericMessage)
+	resp, err := h.s.VAPIFunctionTrade(c.Context(), genericMessage)
 	if err != nil {
 		return err
 	}
