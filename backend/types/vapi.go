@@ -1,6 +1,8 @@
 package types
 
 import (
+	"encoding/json"
+
 	vapi "github.com/VapiAI/server-sdk-go"
 )
 
@@ -41,7 +43,8 @@ func (p AssistantRequestPayload) GetCallType() VapiWebhookEnum {
 
 type StatusUpdatePayload struct {
 	BaseVapiPayload
-	Status   vapi.CallStatus       `json:"status"`
+	Status vapi.CallStatus `json:"status"`
+	vapi.ToolCallMessage
 	Messages []ConversationMessage `json:"messages,omitempty"`
 }
 
@@ -51,4 +54,14 @@ func (p StatusUpdatePayload) GetCallType() VapiWebhookEnum {
 
 type FunctionResult struct {
 	Result string `json:"result"`
+}
+
+type VapiServerMessageToolCall struct {
+	Message VapiServerMessageToolCallMessage `json:"message"`
+}
+
+type VapiServerMessageToolCallMessage struct {
+	ToolCallList    []*vapi.ToolCall `json:"toolCallList,omitempty" url:"toolCallList,omitempty"`
+	extraProperties map[string]interface{}
+	_rawJSON        json.RawMessage
 }

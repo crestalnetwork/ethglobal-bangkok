@@ -1,13 +1,19 @@
 package handler
 
-import "github.com/crestalnetwork/ethglobal-bangkok/backend/service"
+import (
+	"log/slog"
+
+	"github.com/crestalnetwork/ethglobal-bangkok/backend/service"
+)
 
 type Handler struct {
-	s *service.Service
+	s   *service.Service
+	log *slog.Logger
 }
 
-func New(s *service.Service) *Handler {
+func New(s *service.Service, log *slog.Logger) *Handler {
 	return &Handler{
-		s: s,
+		s:   s,
+		log: log,
 	}
 }

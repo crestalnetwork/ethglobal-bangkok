@@ -28,7 +28,7 @@ func Start(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	h := handler.New(s)
+	h := handler.New(s, log)
 	// fiber app
 	app := fiber.New(fiber.Config{
 		ReadTimeout:              60 * time.Second,
@@ -68,7 +68,10 @@ func Start(ctx context.Context) error {
 	app.Use(recover.New(recover.Config{EnableStackTrace: true}))
 
 	// register routes
-	app.Post("/function", h.VAPIFunction)
+	app.Post("/function/assistant", h.VAPIFunction)
+	app.Post("/function/trade", h.VAPIFunctionTrade)
+	app.Post("/function/confirm", h.VAPIFunctionConfirm)
+	app.Post("/function/sign", h.VAPIFunctionSign)
 
 	go func() {
 		<-ctx.Done()
