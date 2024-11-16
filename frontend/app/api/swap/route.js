@@ -33,7 +33,6 @@ export async function POST(req) {
 
         if (trade.getStatus() === 'complete') {
             console.log(`Trade successfully completed: `, trade.toString());
-            console.log(`transfer_id`,);
 
             const transactionHash = trade.getTransaction().getTransactionHash()
 
