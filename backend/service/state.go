@@ -11,7 +11,7 @@ func (s *Service) GetChatState(ctx context.Context, id string) (*types.State, er
 	raw, ok := s.state.Load(id)
 	if !ok {
 		resp = &types.State{
-			ChatID: id,
+			CallID: id,
 		}
 		s.state.Store(id, resp)
 		return resp, nil

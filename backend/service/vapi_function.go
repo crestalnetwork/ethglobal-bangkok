@@ -38,11 +38,24 @@ func (s *Service) VAPIFunctionTrade(ctx context.Context, msg *types.VapiServerMe
 			}
 		}
 	}
+
+	callID := msg.Message.Call.Id
+	// check the call id
+	state, err := s.GetChatState(ctx, callID)
+	if err != nil {
+		return nil, err
+	}
+	if state.Step > 0 {
+		return vapiToolResponse(id, fmt.Sprintf("You are trading %s, please confirm or cancel the transaction.", state.Trade.Currency)), nil
+	}
+
 	s.log.Warn("VAPIFunction called", "trade", trade)
-	res := types.ToolResult{ToolCallID: id, Result: fmt.Sprintf("Tell the user:The prize of %s is $%f now, are you sure you want to go ahead with this transaction?",
-		trade.Currency, rand.Float64()*100)}
-	resp.Results = append(resp.Results, res)
-	return resp, nil
+	trade.Price = rand.Float64() * 100 // mock the price
+	// update the state
+	state.Trade = *trade
+	state.Step = 1
+	s.state.Store(callID, state)
+	return vapiToolResponse(id, fmt.Sprintf("Tell the user: The prize of %s is $%f now, are you sure you want to go ahead with this transaction?", trade.Currency, trade.Price)), nil
 }
 
 func (s *Service) VAPIFunctionConfirm(ctx context.Context, msg *types.VapiServerMessageToolCall) (*types.ToolResults, error) {
@@ -116,4 +129,15 @@ func (s *Service) VAPIFunction(ctx context.Context, genericMessage map[string]in
 	// s.log.Info("VAPIFunctionTrade called", "message", req)
 	// return &types.FunctionResult{Result: "Your transaction is in progress, please wait."}, nil
 	return nil
+}
+
+func vapiToolResponse(toolID string, result string) *types.ToolResults {
+	return &types.ToolResults{
+		Results: []types.ToolResult{
+			{
+				ToolCallID: toolID,
+				Result:     result,
+			},
+		},
+	}
 }

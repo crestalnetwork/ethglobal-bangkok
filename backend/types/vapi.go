@@ -66,6 +66,7 @@ type VapiServerMessageToolCall struct {
 }
 
 type VapiServerMessageToolCallMessage struct {
+	Call            vapi.Call        `json:"call"`
 	ToolCallList    []*vapi.ToolCall `json:"toolCallList,omitempty" url:"toolCallList,omitempty"`
 	extraProperties map[string]interface{}
 	_rawJSON        json.RawMessage
