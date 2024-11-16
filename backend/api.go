@@ -70,6 +70,8 @@ func Start(ctx context.Context) error {
 	// register routes
 	app.Post("/function/assistant", h.VAPIFunction)
 	app.Post("/function/trade", h.VAPIFunctionTrade)
+	app.Post("/function/confirm", h.VAPIFunctionConfirm)
+	app.Post("/function/sign", h.VAPIFunctionSign)
 
 	go func() {
 		<-ctx.Done()
