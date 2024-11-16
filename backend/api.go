@@ -28,7 +28,7 @@ func Start(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	h := handler.New(s)
+	h := handler.New(s, log)
 	// fiber app
 	app := fiber.New(fiber.Config{
 		ReadTimeout:              60 * time.Second,

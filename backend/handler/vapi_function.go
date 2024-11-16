@@ -24,6 +24,8 @@ func (h *Handler) VAPIFunctionTrade(c *fiber.Ctx) error {
 	var msg = new(types.VapiServerMessageToolCall)
 	err := c.BodyParser(msg)
 	if err != nil {
+		h.log.Error("VAPIFunctionTrade", "error", err)
+		h.log.Error("VAPIFunctionTrade body", "body", string(c.Body()))
 		return types.NewError(fiber.StatusBadRequest, "BadRequest", err.Error())
 	}
 	resp, err := h.s.VAPIFunctionTrade(c.Context(), msg)
