@@ -28,9 +28,7 @@ export default function Swap() {
     getBalance();
 
     vapi.on("message", (message) => {
-      if (message.role === 'assistant') {
-        console.log(message);
-      }
+      console.log(message);
     });
 
     vapi.on("error", (e) => {
@@ -156,7 +154,7 @@ export default function Swap() {
       const response = await fetch("/api/swap", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ethAmount }),
+        body: JSON.stringify({ amount: usdcAmount }),
       });
 
       const data = await response.json();
