@@ -40,8 +40,8 @@ const sdk = new SDK({
 });
 
 export const swap = async function (srcToken: string, dstToken: string, amount: string) {
-  const srcNetwork = NetworkEnum.GNOSIS;
-  const dstNetwork = NetworkEnum.ARBITRUM;
+  const srcNetwork = NetworkEnum.POLYGON;
+  const dstNetwork = NetworkEnum.OPTIMISM;
   const srcTokenAddress = await getTokenByName(srcNetwork.toString(), srcToken); // "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
   const dstTokenAddress = await getTokenByName(dstNetwork.toString(), dstToken); // "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58"
 
@@ -51,10 +51,10 @@ export const swap = async function (srcToken: string, dstToken: string, amount: 
   const quote = await sdk.getQuote({
     amount: amount,
     srcChainId: srcNetwork,
-    dstChainId: dstNetwork, 
+    dstChainId: dstNetwork,
     enableEstimate: true,
-    srcTokenAddress: srcTokenAddress!, // "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
-    dstTokenAddress: dstTokenAddress!, // "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    srcTokenAddress: srcTokenAddress!,
+    dstTokenAddress: dstTokenAddress!,
     walletAddress,
   });
   const preset = PresetEnum.fast;
