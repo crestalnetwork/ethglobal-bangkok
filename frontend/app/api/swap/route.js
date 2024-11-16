@@ -9,9 +9,9 @@ export async function POST(req) {
 
     try {
         // const trade = await oneInchSwap({
-        //     fromAssetId: 'usdc',
-        //     toAssetId: 'eth',
-        //     amount
+        //     fromAssetId: 'USDT',
+        //     toAssetId: 'USDC',
+        //     amount: 50000000
         // })
 
         const trade = await coinbaseSwap({

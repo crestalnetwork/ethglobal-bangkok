@@ -1,17 +1,18 @@
-import inch from "@1inch/cross-chain-sdk";
+
 import { getTokenByName } from './token';
 
-const {
+import {
     HashLock,
     NetworkEnum,
     OrderStatus,
     PresetEnum,
     PrivateKeyProviderConnector,
     SDK,
-} = inch;
+} from "@1inch/cross-chain-sdk";
 
 import Web3 from "web3";
 import { randomBytes } from 'node:crypto'
+import { Decimal } from "decimal.js";
 
 async function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms))
@@ -37,17 +38,25 @@ const sdk = new SDK({
     blockchainProvider: new PrivateKeyProviderConnector(privateKey, web3), // only required for order creation
 });
 
-export const swap = async function (srcToken: string, dstToken: string, amount: string) {
+
+export type Amount = number | bigint | Decimal;
+export type CreateTradeOptions = {
+    amount: Amount;
+    fromAssetId: string;
+    toAssetId: string;
+};
+
+export const swap = async function ({ fromAssetId, toAssetId, amount }: CreateTradeOptions) {
     const srcNetwork = NetworkEnum.GNOSIS;
     const dstNetwork = NetworkEnum.ARBITRUM;
-    const srcTokenAddress = await getTokenByName(srcNetwork.toString(), srcToken); // "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
-    const dstTokenAddress = await getTokenByName(dstNetwork.toString(), dstToken); // "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58"
+    const srcTokenAddress = await getTokenByName(srcNetwork.toString(), fromAssetId); // "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
+    const dstTokenAddress = await getTokenByName(dstNetwork.toString(), toAssetId); // "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58"
 
     console.log(srcTokenAddress);
     console.log(dstTokenAddress);
 
     const quote = await sdk.getQuote({
-        amount: amount,
+        amount: amount.toString(),
         srcChainId: srcNetwork,
         dstChainId: dstNetwork,
         enableEstimate: true,
@@ -79,46 +88,49 @@ export const swap = async function (srcToken: string, dstToken: string, amount: 
     console.log({ hash }, 'order created');
 
     // submit order  
-    const _orderInfo = await sdk.submitOrder(
-        quote.srcChainId,
-        order,
-        quoteId,
-        secretHashes
-    );
-    console.log({ hash }, 'order submitted');
+    // const _orderInfo = await sdk.submitOrder(
+    //     quote.srcChainId,
+    //     order,
+    //     quoteId,
+    //     secretHashes
+    // );
+    // console.log({ hash }, 'order submitted');
 
     // submit secrets for deployed escrows  
-    while (true) {
-        try {
-            const secretsToShare = await sdk.getReadyToAcceptSecretFills(hash);
+    // while (true) {
+    //     try {
+    //         const secretsToShare = await sdk.getReadyToAcceptSecretFills(hash);
 
-            if (secretsToShare.fills.length) {
-                for (const { idx } of secretsToShare.fills) {
-                    await sdk.submitSecret(hash, secrets[idx])
+    //         if (secretsToShare.fills.length) {
+    //             for (const { idx } of secretsToShare.fills) {
+    //                 await sdk.submitSecret(hash, secrets[idx])
 
-                    console.log({ idx }, 'shared secret');
-                }
-            }
+    //                 console.log({ idx }, 'shared secret');
+    //             }
+    //         }
 
-            // check if order finished  
-            const { status } = await sdk.getOrderStatus(hash);
+    //         // check if order finished  
+    //         const { status } = await sdk.getOrderStatus(hash);
 
-            if (
-                status === OrderStatus.Executed ||
-                status === OrderStatus.Expired ||
-                status === OrderStatus.Refunded
-            ) {
-                break
-            }
+    //         if (
+    //             status === OrderStatus.Executed ||
+    //             status === OrderStatus.Expired ||
+    //             status === OrderStatus.Refunded
+    //         ) {
+    //             break
+    //         }
 
-            await sleep(100000)
-        } catch (e) {
-            console.error(e);
-        } finally {
-            console.log('Done');
-        }
+    //         await sleep(100000)
+    //     } catch (e) {
+    //         console.error(e);
+    //     } finally {
+    //         console.log('Done');
+    //     }
+    // }
+
+    // const statusResponse = await sdk.getOrderStatus(hash);
+    // console.log(statusResponse);
+    return {
+        success: true
     }
-
-    const statusResponse = await sdk.getOrderStatus(hash);
-    console.log(statusResponse);
 };

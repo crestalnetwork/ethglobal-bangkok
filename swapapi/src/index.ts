@@ -25,7 +25,7 @@ app.post("/swap", async (req: Request, res: Response) => {
       req.body.srcToken,
       req.body.dstToken,
       req.body.amount).then(function () {
-        return res.status(StatusCodes.OK).json({success: true})
+        return res.status(StatusCodes.OK).json({ success: true })
       }).catch(function (e) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ e })
       });
@@ -37,7 +37,7 @@ app.post("/swap", async (req: Request, res: Response) => {
 app.get("/price", async (req: Request, res: Response) => {
   try {
     await getTokensPrice(req.body.network).then(function (data) {
-      return res.status(StatusCodes.OK).json({success: true})
+      return res.status(StatusCodes.OK).json({ success: true })
     }).catch(function (e) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ e })
     });
