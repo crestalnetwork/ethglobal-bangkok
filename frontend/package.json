@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@coinbase/coinbase-sdk": "^0.10.0",
     "@coinbase/onchainkit": "^0.35.5",
     "@nextui-org/react": "^2.4.8",
     "ethers": "^6.13.4",
