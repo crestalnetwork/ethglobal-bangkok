@@ -37,7 +37,7 @@ jobs:
             GH_CI_USER=${{ secrets.GH_CI_USER }}
             GH_CI_TOKEN=${{ secrets.GH_CI_TOKEN }}
           push: true
-          tags: ghcr.io/crestalnetwork/crestalnetwork/ethglobal-bangkok:latest
+          tags: ghcr.io/crestalnetwork/ethglobal-bangkok:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
       -
