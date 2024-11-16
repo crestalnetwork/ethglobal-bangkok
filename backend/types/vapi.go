@@ -52,8 +52,13 @@ func (p StatusUpdatePayload) GetCallType() VapiWebhookEnum {
 	return p.Type
 }
 
-type FunctionResult struct {
-	Result string `json:"result"`
+type ToolResults struct {
+	Results []ToolResult `json:"results"`
+}
+
+type ToolResult struct {
+	ToolCallID string `json:"toolCallId"`
+	Result     string `json:"result"`
 }
 
 type VapiServerMessageToolCall struct {
