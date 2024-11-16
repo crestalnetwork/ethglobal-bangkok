@@ -1,0 +1,61 @@
+{
+    "root": true,
+    "env": {
+      "es2020": true,
+      "jasmine": true,
+      "jest": true,
+      "node": true
+    },
+    "settings": {
+      "noInlineConfig": true,
+      "node": {
+        "tryExtensions": [".js", ".ts",".mjs", ".d.ts"],
+        "moduleDirectory": ["node_modules", "src/"]
+      },
+      "import/resolver": {
+        "node": {
+          "extensions": [".js", ".ts", ".d.ts", ".mjs"],
+          "moduleDirectory": ["node_modules", "src/"],
+          "typescript": {}
+        },
+        "typescript": {
+          "alwaysTryTypes": true,
+          "project": "."
+        }
+      }
+    },
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:node/recommended",
+      "airbnb-base",
+      "plugin:import/errors",
+      "plugin:import/warnings",
+      "plugin:import/typescript",
+      "prettier"
+    ],
+    "parserOptions": { "ecmaVersion": 2018, "sourceType": "module", "project": "./tsconfig.json" },
+    "plugins": [
+        "@typescript-eslint",
+        "eslint-plugin-tsdoc",
+        "import"
+    ],
+    "rules": {
+      "tsdoc/syntax": "warn",
+      "import/extensions": "off",
+      "linebreak-style": "off",
+      "node/no-unsupported-features/es-syntax": "off",
+      "no-underscore-dangle": "off",
+      "import/prefer-default-export": "off",
+      "@typescript-eslint/no-explicit-any": "error",
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ]
+    }
+}
