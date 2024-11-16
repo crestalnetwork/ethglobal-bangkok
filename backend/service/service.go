@@ -15,9 +15,11 @@ type Options struct {
 }
 
 type Service struct {
-	config *types.Config
-	log    *slog.Logger
-	state  sync.Map // call id -> state
+	config  *types.Config
+	log     *slog.Logger
+	state   sync.Map // call id -> state
+	wallet  string
+	balance sync.Map // symbol -> balance
 }
 
 func New(options Options) (*Service, error) {
@@ -33,5 +35,6 @@ func New(options Options) (*Service, error) {
 	return &Service{
 		config: options.Config,
 		log:    log,
+		wallet: "0x1234567890",
 	}, nil
 }
