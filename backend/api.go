@@ -49,6 +49,9 @@ func Start(ctx context.Context) error {
 			if strings.HasPrefix(ctx.Path(), "/health_check") {
 				return false
 			}
+			if strings.HasPrefix(ctx.Path(), "/chats") {
+				return false
+			}
 			return true
 		}},
 	}))
