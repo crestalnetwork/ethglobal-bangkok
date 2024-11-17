@@ -19,14 +19,12 @@ async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-//mainnetacc
-const privateKey = "***REMOVED***";
+// FIXME: env var
+const privateKey = "";
 const rpc = 'https://ethereum-rpc.publicnode.com'
 
-// const privateKey = "***REMOVED***";
-// const rpc = "http://127.0.0.1:8545";
-
-const authKey = "***REMOVED***";
+// FIXME: env var
+const authKey = "";
 const source = "sdk-tutorial";
 
 const web3 = new Web3(rpc);
