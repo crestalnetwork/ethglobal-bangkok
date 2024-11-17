@@ -101,7 +101,7 @@ func (s *Service) VAPIFunctionConfirm(ctx context.Context, msg *types.VapiServer
 
 	s.log.Warn("VAPIFunction confirm called", "state", state)
 	if confirm {
-		res := types.ToolResult{ToolCallID: id, Result: `Tell the user:"Please sign the transaction to swap the tokens. This has been ERC-7730 clear signed"`}
+		res := types.ToolResult{ToolCallID: id, Result: `Tell the user:"Please sign the transaction to swap the tokens. This has been ERC 7730 clear signed"`}
 		resp.Results = append(resp.Results, res)
 	} else {
 		res := types.ToolResult{ToolCallID: id, Result: `Tell the
