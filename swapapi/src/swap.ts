@@ -12,6 +12,13 @@ const {
 
 } = inch;
 
+const chainList = [
+  NetworkEnum.POLYGON,
+  NetworkEnum.OPTIMISM,
+  NetworkEnum.GNOSIS,
+  NetworkEnum.ARBITRUM,
+];
+
 import Web3, { ERR_VALIDATION, errors } from "web3";
 import { randomBytes } from 'node:crypto'
 
@@ -20,7 +27,7 @@ async function sleep(ms: number): Promise<void> {
 }
 
 // FIXME: env var
-const privateKey = "";
+const privateKey = "0x";
 const rpc = 'https://ethereum-rpc.publicnode.com'
 
 // FIXME: env var
@@ -38,8 +45,8 @@ const sdk = new SDK({
 });
 
 export const swap = async function (srcToken: string, dstToken: string, amount: string) {
-  const srcNetwork = NetworkEnum.GNOSIS;
-  const dstNetwork = NetworkEnum.ARBITRUM;
+  const srcNetwork = chainList[0];
+  const dstNetwork = chainList[1];
   const srcTokenAddress = await getTokenByName(srcNetwork.toString(), srcToken); // "0xc2132d05d31c914a87c6611c10748aeb04b58e8f"
   const dstTokenAddress = await getTokenByName(dstNetwork.toString(), dstToken); // "0x94b008aa00579c1307b0ef2c499ad98a8ce58e58"
 
