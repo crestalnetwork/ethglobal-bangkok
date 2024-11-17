@@ -7,7 +7,7 @@ import { formatNumberWithCommas } from "../utils/formatNumberWithCommas";
 
 import Vapi from "@vapi-ai/web";
 import Link from "next/link";
-const vapi = new Vapi("388edb4d-b8fb-4bb6-bb3a-7ddf0d7be2b5");
+const vapi = new Vapi("3e38b3b4-951d-4395-b0e7-e7d7cb45a485");
 
 
 export default function Swap() {
@@ -32,7 +32,7 @@ export default function Swap() {
   /**
    * Check Command
    */
-  const checkCommand = async (callId: string) => {
+  const checkCommand = async (callId: string, message: any) => {
     if (!callId) {
       return
     }
@@ -50,15 +50,20 @@ export default function Swap() {
       }
 
       const { step, trade } = data
-      console.log('data', step, trade);
+      console.log('message', message, step, trade);
 
       const { destination_token_symbol, origin_token_amount, origin_token_symbol, price } = trade
 
-      if (step === 2) {
+      const transcript = message.transcript || ''
+
+      if (transcript.indexOf('connect') !== -1 && transcript.indexOf('wallet') !== -1) {
+        connectWallet()
+      } else if (step === 2) {
         setEthAmount(origin_token_amount);
+        fetchPrice(Number(origin_token_amount));
       } else if (step === 3) {
         vapi.stop();
-        handleSwap(price);
+        handleSwap(price || 0.001);
       }
 
     } catch (error) {
@@ -102,12 +107,12 @@ export default function Swap() {
    */
   const startChart = async () => {
     if (!chatting) {
-      const call = await vapi.start("b4d67474-30a9-432b-b3ec-fdf0121911e3");
+      const call = await vapi.start("5eeba9e6-2145-4d2b-95df-396792872e49");
 
       vapi.on("message", (message) => {
         // console.log(message);
         if (message.role === 'assistant') {
-          checkCommand(call?.id || '');
+          checkCommand(call?.id || '', message);
         }
       });
 
@@ -127,6 +132,8 @@ export default function Swap() {
    * Connect Wallet
    */
   const connectWallet = async () => {
+    if (address) return;
+
     setConnecting(true);
     try {
       const response = await fetch("/api/connect-wallet", {
@@ -184,7 +191,7 @@ export default function Swap() {
   /**
    * Swap
    */
-  const handleSwap = async (commandAmount = 3) => {
+  const handleSwap = async (commandAmount: number) => {
     if (swapping || ethBalance < Number(ethAmount)) {
       return;
     }
@@ -282,10 +289,10 @@ export default function Swap() {
 
         <div className="mt-8">
           <Image
-            className="cursor-pointer"
+            className="cursor-pointer rounded-2xl"
             src="/chat.png"
-            width={100}
-            height={100}
+            width={160}
+            height={160}
             alt="Start Chat"
             onClick={startChart}
           />

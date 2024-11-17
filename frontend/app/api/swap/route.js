@@ -17,6 +17,8 @@ export async function POST(req) {
         const trade = await coinbaseSwap({
             fromAssetId: 'usdc',
             toAssetId: 'eth',
+            // fromAssetId: 'eth',
+            // toAssetId: 'usdc',
             amount
         })
 
