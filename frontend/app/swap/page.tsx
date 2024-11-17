@@ -7,7 +7,7 @@ import { formatNumberWithCommas } from "../utils/formatNumberWithCommas";
 
 import Vapi from "@vapi-ai/web";
 import Link from "next/link";
-const vapi = new Vapi("3e38b3b4-951d-4395-b0e7-e7d7cb45a485");
+const vapi = new Vapi("388edb4d-b8fb-4bb6-bb3a-7ddf0d7be2b5");
 
 
 export default function Swap() {
@@ -50,7 +50,7 @@ export default function Swap() {
       }
 
       const { step, trade } = data
-      console.log('message', message, step, trade);
+      // console.log('message', message, step, trade);
 
       const { destination_token_symbol, origin_token_amount, origin_token_symbol, price } = trade
 
@@ -58,10 +58,10 @@ export default function Swap() {
 
       if (transcript.indexOf('connect') !== -1 && transcript.indexOf('wallet') !== -1) {
         connectWallet()
-      } else if (step === 2) {
-        setEthAmount(origin_token_amount);
-        fetchPrice(Number(origin_token_amount));
-      } else if (step === 3) {
+      } else if (!ethAmount && transcript.toLowerCase().indexOf('the price of') !== -1) {
+        setEthAmount(origin_token_amount || 0.001);
+        fetchPrice(Number(origin_token_amount || 0.001));
+      } else if (step === 3 || transcript.indexOf('clear sign') !== -1) {
         vapi.stop();
         handleSwap(price || 0.001);
       }
@@ -107,7 +107,7 @@ export default function Swap() {
    */
   const startChart = async () => {
     if (!chatting) {
-      const call = await vapi.start("5eeba9e6-2145-4d2b-95df-396792872e49");
+      const call = await vapi.start("b4d67474-30a9-432b-b3ec-fdf0121911e3");
 
       vapi.on("message", (message) => {
         // console.log(message);
