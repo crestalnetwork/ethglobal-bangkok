@@ -37,6 +37,8 @@ const sdk = new SDK({
   blockchainProvider: new PrivateKeyProviderConnector(privateKey, web3), // only required for order creation
 });
 
+const supportedNetworks = [NetworkEnum.ARBITRUM, NetworkEnum.BASE, NetworkEnum.GNOSIS, NetworkEnum.POLYGON];
+
 export const swap = async function (srcToken: string, dstToken: string, amount: string) {
   const srcNetwork = NetworkEnum.GNOSIS;
   const dstNetwork = NetworkEnum.ARBITRUM;
